@@ -17,8 +17,8 @@ class Shape:
                     self.listt[row][col] = '\033[94m\u25A0\033[0m' 
 
     def print_matrix(self):
-        print("    0 1 2 3 4 5")
-        print("   ------------")
+        print("    \033[1;32m0 1 2 3 4 5")
+        print("   \033[1;32m------------")
         for row in range(0, 6):
             print(f"{row} |", end=" ")
             for col in range(0, 6):
