@@ -57,75 +57,78 @@ class Puzzle:
 
 
 def modify_matrix(shape_1, blocker_locations, first_input, current_row):
-    input_row = int(input("Input the row of shape: "))
-    input_col = int(input("Input the column of shape: "))
+    input_row = int(input("\033[92mInput the row of shape:\033[92m "))
+    input_col = int(input("\033[92mInput the column of shape:\033[92m "))
     print("\n")
 
     if first_input and input_row != 0:
-        print("Invalid move! The first shape must be printed on row 0.")
+        print("\033[91mFirst move must be on row 0.\033[91m")
         return None
 
     if not first_input and input_row > current_row:
-        print(f"Invalid move! The shape must be printed on the next consecutive row or the same row ({current_row}).")
+        print("\033[91myou can't skip rows.\033[91m")
         return None
 
     if (input_row, input_col) in blocker_locations:
-        print("You lost! Hit a blocked spot.")
+        print("\033[91mYou hit a blocked spot.\033[91m")
         return None
 
     shape_1[input_row][input_col] = 1
 
     if input_row == 5:
-        print("     You won!\n")
+
+        print("     \033[91mYOU WON!\033[91m\n")
         pygame.init()
         pygame.mixer.init()
         sound = pygame.mixer.Sound("data/victory.mp3")
         sound.play()
-
+        
         return shape_1
-
+        
     return shape_1
 
 
-def play_music():
-    pygame.init()
-    pygame.mixer.init()
-    sound = pygame.mixer.Sound("data/tetris.ogg")
-    sound.play()
-
 
 def main():
-    #play_music()
-
+    print("\n")
+    print("\033[91mWelcome to the RGB Matrix enjoy your stay!\033[91m")
     shape_1 = [[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0],
                [0, 0, 0, 0, 0, 0]]
 
+
     blocker_locations = []
-    while len(blocker_locations) < 8:
-        random_location = (random.randint(0, 5), random.randint(0, 5))
-        if random_location not in blocker_locations:
-            blocker_locations.append(random_location)
+    max_traps = 12
+    for row in range(6):
+        traps_in_row = min(2, max_traps)
+        max_traps -= traps_in_row
+        while traps_in_row > 0:
+            random_location = (row, random.randint(0, 5))
+            if random_location not in blocker_locations:
+                blocker_locations.append(random_location)
+                traps_in_row -= 1
+
+
 
     current_position = (0, 0)
     puzzle1 = Puzzle(shape_1, blocker_locations)
-    puzzle1.draw(shape_1)
+    puzzle1.draw(shape_1) 
     puzzle1.print_matrix()
-
+    
     first_input = True
-
-    for current_row in range(8):
+    
+    for current_row in range(36):
         result = modify_matrix(shape_1, blocker_locations, first_input, current_row)
         first_input = False
         if result is None:
             break
         puzzle1.draw(result)
         puzzle1.print_matrix()
+        
+    
+   
+
 
     
-    shape_2 = [[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0],
-               [0, 0, 0, 0, 0, 0]]
-    puzzle1.shape_instance.add_shape(shape_2, 0, 3)
-    puzzle1.print_matrix()
 
 
 if __name__ == "__main__":
