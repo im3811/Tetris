@@ -15,11 +15,11 @@ class Shape:
             for col in range(len(table[row])):
                 if table[row][col] == 1:
                     if row < 2:
-                        self.listt[row][col] = '\033[94m\u25A0\033[0m'
+                        self.listt[row][col] = '#'
                     elif 2 <= row <= 3:
-                        self.listt[row][col] = '\033[93m\u25A0\033[0m'
+                        self.listt[row][col] = '#'
                     else:
-                        self.listt[row][col] = '\033[91m\u25A0\033[0m'
+                        self.listt[row][col] = '#'
 
     def print_matrix(self):
         print("    \033[92m0 1 2 3 4 5")
@@ -37,11 +37,11 @@ class Shape:
             for c in range(len(shape[0])):
                 if shape[r][c] == 1:
                     if row + r < 2:
-                        temp_matrix[row + r][col + c] = '\033[94m\u25A0\033[0m'
+                        temp_matrix[row + r][col + c] = '#'
                     elif 2 <= row + r <= 3:
-                        temp_matrix[row + r][col + c] = '\033[93m\u25A0\033[0m'
+                        temp_matrix[row + r][col + c] = '#'
                     else:
-                        temp_matrix[row + r][col + c] = '\033[91m\u25A0\033[0m'
+                        temp_matrix[row + r][col + c] = '#'
 
         self.listt = temp_matrix
 
@@ -51,16 +51,13 @@ class Puzzle:
         self.shape_instance = Shape(shape)
         self.blocker_locations = blocker_locations or []
 
-    def draw(self, locations):
+    def draw(self, locations, current_row):
         for row in range(len(locations)):
             for col in range(len(locations[0])):
                 if locations[row][col] == 1:
-                    if row < 2:
-                        self.shape_instance.listt[row][col] = '\033[94m\u25A0\033[0m'
-                    elif 2 <= row <= 3:
-                        self.shape_instance.listt[row][col] = '\033[93m\u25A0\033[0m'
-                    else:
+                    if current_row < 6:
                         self.shape_instance.listt[row][col] = '\033[91m\u25A0\033[0m'
+                    
 
         for blocker_location in self.blocker_locations:
             row, col = blocker_location
@@ -114,7 +111,6 @@ def modify_matrix(shape_1, blocker_locations, first_input, current_row):
 
 
 
-
 def main():
     print("\n")
     print("\033[91mWelcome to the RGB Matrix enjoy your stay!\033[91m")
@@ -125,7 +121,7 @@ def main():
 
     current_position = (0, 0)
     puzzle1 = Puzzle(shape_1, blocker_locations)
-    puzzle1.draw(shape_1)
+    puzzle1.draw(shape_1, 0)  # Pass 0 as the initial value for current_row
     puzzle1.print_matrix()
 
     first_input = True
@@ -137,7 +133,7 @@ def main():
         if result is None:
             violated_rules = True
             break
-        puzzle1.draw(result)
+        puzzle1.draw(result, current_row)  # Pass current_row to the draw function
         puzzle1.print_matrix()
     if current_row == 23:
         print("     \033[91mYOU WON!\033[91m\n")
@@ -146,14 +142,10 @@ def main():
         sound = pygame.mixer.Sound("data/victory.mp3")
         sound.play()
 
-    
         pygame.time.delay(2000)
 
-    
         pygame.event.get()
         pygame.quit()
-
-   
 
 if __name__ == "__main__":
     main()
