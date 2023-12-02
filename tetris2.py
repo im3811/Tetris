@@ -107,25 +107,13 @@ def modify_matrix(shape_1, blocker_locations, first_input, current_row):
     shape_1[input_row][input_col] = 1
 
     
-    if all(all(cell in {0, 1} for cell in row) for row in shape_1):
-        
-        if all(all(cell == 1 for cell in row) for row in shape_1[:4]):
-            print("     \033[91mYOU WON!\033[91m\n")
-            pygame.init()
-            pygame.mixer.init()
-            sound = pygame.mixer.Sound("data/victory.mp3")
-            sound.play()
-            pygame.time.delay(2000)  
-
-            
-            while pygame.mixer.get_busy():
-                pygame.time.delay(100)
+    
 
     return shape_1
 
 
 
-# ... (existing code)
+
 
 def main():
     print("\n")
@@ -151,12 +139,19 @@ def main():
             break
         puzzle1.draw(result)
         puzzle1.print_matrix()
-    if current_row == 24:
+    if current_row == 23:
         print("     \033[91mYOU WON!\033[91m\n")
         pygame.init()
         pygame.mixer.init()
         sound = pygame.mixer.Sound("data/victory.mp3")
         sound.play()
+
+    
+        pygame.time.delay(2000)
+
+    
+        pygame.event.get()
+        pygame.quit()
 
    
 
