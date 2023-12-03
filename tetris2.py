@@ -84,17 +84,30 @@ class Puzzle:
 def place_traps():
     blocker_locations = set()
     max_traps = 6
-    while len(blocker_locations) < max_traps:
+
+    for row in range(6):
+        random_col = random.randint(0, 5)
+        blocker_locations.add((row, random_col))
+
+    remaining_traps = max_traps - 6  
+    while remaining_traps > 0:
         random_location = (random.randint(0, 5), random.randint(0, 5))
-        blocker_locations.add(random_location)
+        if random_location not in blocker_locations:
+            blocker_locations.add(random_location)
+            remaining_traps -= 1
+
     return list(blocker_locations)
 
 
 def modify_matrix(puzzle_locations, blocker_locations, first_input, current_row):
     global BROKEN_RULES
+
+    
     input_row = int(input("\033[92mInput the row of shape:\033[92m "))
     input_col = int(input("\033[92mInput the column of shape:\033[92m "))
     print("\n")
+
+   
 
     if first_input and input_row != 0:
         print("\033[91mFirst move must be on row 0.\033[91m")
@@ -119,11 +132,28 @@ def modify_matrix(puzzle_locations, blocker_locations, first_input, current_row)
 
 
 
+def play_again():
+    global BROKEN_RULES
+    BROKEN_RULES = False
+
+    shape_1 = [[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0],
+               [0, 0, 0, 0, 0, 0]]
+
+    blocker_locations = place_traps()
+
+    puzzle1 = Puzzle(shape_1, blocker_locations)
+    puzzle1.draw(shape_1, 0)
+    puzzle1.print_matrix()
+
+    return puzzle1, shape_1, blocker_locations
+
+
+
 
 def main():
     print("\n")
-    promt = input("\033[91mWelcome to the MatriX. Press 'p' to play! \033[91m",)
-    if promt == "p":
+    prompt = input("\033[91mWelcome to the MatriX. Press 'p' to play! \033[91m")
+    if prompt == "p":
         shape_1 = [[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0],
                [0, 0, 0, 0, 0, 0]]
 
@@ -149,7 +179,7 @@ def main():
 
                 # DRAW SQUARE ON COORDINATES
                 puzzle1.draw_square(x, y)
-                if BROKEN_RULES:
+                if BROKEN_RULES or prompt == 'q':
                     exit()
                 puzzle1.print_matrix()
             pygame.init()
@@ -159,7 +189,11 @@ def main():
             print("     \033[91mYOU WON!\033[91m\n")
             pygame.time.delay(2000)
             
-            
+            play_again_response = input("\033[91mDo you want to play again? (y/n): \033[91m")
+            if play_again_response.lower() != 'y':
+                break
+            else:
+                puzzle1, shape_1, blocker_locations = play_again()
                 
    
         
