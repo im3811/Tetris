@@ -122,7 +122,7 @@ def modify_matrix(puzzle_locations, blocker_locations, first_input, current_row)
 
 def main():
     print("\n")
-    promt = input("\033[91mWelcome to the MatriX. Press 'p' to play!\033[91m")
+    promt = input("\033[91mWelcome to the MatriX. Press 'p' to play! \033[91m",)
     if promt == "p":
         shape_1 = [[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0],
                [0, 0, 0, 0, 0, 0]]
@@ -139,9 +139,8 @@ def main():
         first_input = True
     
         while True:
-        
-
-            for current_row in range(31):
+            
+            for current_row in range(30):
 
                 # SET COORDINATES OF USER INPUT TO 1
                 x, y = modify_matrix(shape_1, blocker_locations, first_input, current_row)
@@ -151,23 +150,18 @@ def main():
                 # DRAW SQUARE ON COORDINATES
                 puzzle1.draw_square(x, y)
                 if BROKEN_RULES:
-                    exit()  
+                    exit()
                 puzzle1.print_matrix()
-
-
-    # run the game until either win or lose or broken rules
+            pygame.init()
+            pygame.mixer.init()
+            sound = pygame.mixer.Sound("data/victory.mp3")
+            sound.play()
+            print("     \033[91mYOU WON!\033[91m\n")
+            pygame.time.delay(2000)
+            
+            
+                
    
-    
-        """print("     \033[91mYOU WON!\033[91m\n")
-        pygame.init()
-        pygame.mixer.init()
-        sound = pygame.mixer.Sound("data/victory.mp3")
-        sound.play()
-
-        pygame.time.delay(2000)
-
-        pygame.event.get()
-        pygame.quit()
-"""
+        
 if __name__ == "__main__":
     main()
