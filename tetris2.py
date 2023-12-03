@@ -55,10 +55,7 @@ class Puzzle:
             self.shape_instance.listt[coordinate_x][coordinate_y] = '\033[95m\u25A0\033[0m'
 
     def draw(self, locations, current_row):
-        """
-        params: coordinates x,y 
-        draws a square of specif color at the given coordinates
-        """
+        
         
         for row in range(len(locations)):
             for col in range(len(locations[0])):
@@ -125,7 +122,7 @@ def modify_matrix(puzzle_locations, blocker_locations, first_input, current_row)
         print("     \033[91mGAME OVER!\033[91m\n")
         BROKEN_RULES = True
 
-    # SET LOCATION TO 1 (whatever 1 means)
+    
     puzzle_locations[input_row][input_col] = 1
 
     return input_row, input_col
@@ -162,7 +159,7 @@ def main():
         
         puzzle1 = Puzzle(shape_1, blocker_locations)
 
-        # initialize all locations to 0
+        
         puzzle1.draw(shape_1, 0) 
         puzzle1.print_matrix()
 
@@ -172,12 +169,12 @@ def main():
             
             for current_row in range(30):
 
-                # SET COORDINATES OF USER INPUT TO 1
+                
                 x, y = modify_matrix(shape_1, blocker_locations, first_input, current_row)
             
                 first_input = False
 
-                # DRAW SQUARE ON COORDINATES
+               
                 puzzle1.draw_square(x, y)
                 if BROKEN_RULES or prompt == 'q':
                     exit()
