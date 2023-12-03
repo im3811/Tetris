@@ -1,8 +1,11 @@
-EMPTY_SPOT = '\033[92m-\033[0m'
-BLOCKER_SPOT = '\033[91mX\033[0m'
+
+
 import random
 import pygame
+EMPTY_SPOT = '\033[92m-\033[0m'
+BLOCKER_SPOT = '\033[91mX\033[0m'
 
+BROKEN_RULES = False
 
 class Shape:
     def __init__(self, table):
@@ -50,14 +53,34 @@ class Puzzle:
     def __init__(self, shape, blocker_locations=None):
         self.shape_instance = Shape(shape)
         self.blocker_locations = blocker_locations or []
+        self.color_counter = 0
+
+    
+    def draw_square(self, coordinate_x, coordinate_y):
+        
+        self.color_counter += 1
+
+        if self.color_counter <= 6:
+            self.shape_instance.listt[coordinate_x][coordinate_y] = '\033[91m\u25A0\033[0m'
+
+        elif self.color_counter > 6 and self.color_counter <= 12:
+            self.shape_instance.listt[coordinate_x][coordinate_y] = '\033[92m\u25A0\033[0m'
+
+
 
     def draw(self, locations, current_row):
+        """
+        params: coordinates x,y 
+        draws a square of specif color at the given coordinates
+        """
+        print(locations) 
         for row in range(len(locations)):
             for col in range(len(locations[0])):
                 if locations[row][col] == 1:
                     if current_row < 6:
                         self.shape_instance.listt[row][col] = '\033[91m\u25A0\033[0m'
-                    
+                    elif current_row > 6 and current_row < 12:
+                        self.shape_instance.listt[row][col] = '\033[92m\u25A0\033[0m'
 
         for blocker_location in self.blocker_locations:
             row, col = blocker_location
@@ -81,7 +104,8 @@ def place_traps():
     return list(blocker_locations)
 
 
-def modify_matrix(shape_1, blocker_locations, first_input, current_row):
+def modify_matrix(puzzle_locations, blocker_locations, first_input, current_row):
+    global BROKEN_RULES
     input_row = int(input("\033[92mInput the row of shape:\033[92m "))
     input_col = int(input("\033[92mInput the column of shape:\033[92m "))
     print("\n")
@@ -89,24 +113,23 @@ def modify_matrix(shape_1, blocker_locations, first_input, current_row):
     if first_input and input_row != 0:
         print("\033[91mFirst move must be on row 0.\033[91m")
         print("     \033[91mGAME OVER!\033[91m\n")
-        return None
+        BROKEN_RULES = True
 
     if not first_input and input_row > current_row:
         print("\033[91myou can't skip rows.\033[91m")
         print("     \033[91mGAME OVER!\033[91m\n")
-        return None
+        BROKEN_RULES = True
+
 
     if (input_row, input_col) in blocker_locations:
         print("\033[91mYou hit a blocked spot.\033[91m")
         print("     \033[91mGAME OVER!\033[91m\n")
-        return None
+        BROKEN_RULES = True
 
-    shape_1[input_row][input_col] = 1
+    # SET LOCATION TO 1 (whatever 1 means)
+    puzzle_locations[input_row][input_col] = 1
 
-    
-    
-
-    return shape_1
+    return input_row, input_col
 
 
 
@@ -121,22 +144,34 @@ def main():
 
     current_position = (0, 0)
     puzzle1 = Puzzle(shape_1, blocker_locations)
-    puzzle1.draw(shape_1, 0)  # Pass 0 as the initial value for current_row
+
+    # initialize all locations to 0
+    puzzle1.draw(shape_1, 0) 
     puzzle1.print_matrix()
 
     first_input = True
-    violated_rules = False
+    
+    while True:
+        
 
-    for current_row in range(24):
-        result = modify_matrix(shape_1, blocker_locations, first_input, current_row)
-        first_input = False
-        if result is None:
-            violated_rules = True
-            break
-        puzzle1.draw(result, current_row)  # Pass current_row to the draw function
-        puzzle1.print_matrix()
-    if current_row == 23:
-        print("     \033[91mYOU WON!\033[91m\n")
+        for current_row in range(7):
+
+            # SET COORDINATES OF USER INPUT TO 1
+            x, y = modify_matrix(shape_1, blocker_locations, first_input, current_row)
+            print("sss",BROKEN_RULES)
+            first_input = False
+
+            # DRAW SQUARE ON COORDINATES
+            puzzle1.draw_square( x, y)
+            if BROKEN_RULES:
+                exit()  
+            puzzle1.print_matrix()
+
+
+    # run the game until either win or lose or broken rules
+   
+    
+        """print("     \033[91mYOU WON!\033[91m\n")
         pygame.init()
         pygame.mixer.init()
         sound = pygame.mixer.Sound("data/victory.mp3")
@@ -146,6 +181,6 @@ def main():
 
         pygame.event.get()
         pygame.quit()
-
+"""
 if __name__ == "__main__":
     main()
