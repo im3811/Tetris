@@ -14,15 +14,7 @@ class Shape:
         rows, cols = (6, 6)
         self.listt = [[EMPTY_SPOT] * cols for _ in range(rows)]
 
-        for row in range(rows):
-            for col in range(len(table[row])):
-                if table[row][col] == 1:
-                    if row < 2:
-                        self.listt[row][col] = '#'
-                    elif 2 <= row <= 3:
-                        self.listt[row][col] = '#'
-                    else:
-                        self.listt[row][col] = '#'
+       
 
     def print_matrix(self):
         print("    \033[92m0 1 2 3 4 5")
@@ -33,20 +25,7 @@ class Shape:
                 print(self.listt[row][col], end=" ")
             print("")
 
-    def add_shape(self, shape, row, col):
-        temp_matrix = [row[:] for row in self.listt]
-
-        for r in range(len(shape)):
-            for c in range(len(shape[0])):
-                if shape[r][c] == 1:
-                    if row + r < 2:
-                        temp_matrix[row + r][col + c] = '#'
-                    elif 2 <= row + r <= 3:
-                        temp_matrix[row + r][col + c] = '#'
-                    else:
-                        temp_matrix[row + r][col + c] = '#'
-
-        self.listt = temp_matrix
+    
 
 
 class Puzzle:
@@ -66,14 +45,21 @@ class Puzzle:
         elif self.color_counter > 6 and self.color_counter <= 12:
             self.shape_instance.listt[coordinate_x][coordinate_y] = '\033[92m\u25A0\033[0m'
 
+        elif self.color_counter > 12 and self.color_counter <= 18:
+            self.shape_instance.listt[coordinate_x][coordinate_y] = '\033[93m\u25A0\033[0m'
 
+        elif self.color_counter >18 and self.color_counter <= 24:
+            self.shape_instance.listt[coordinate_x][coordinate_y] = '\033[94m\u25A0\033[0m'
+
+        elif self.color_counter > 24 and self.color_counter <= 31:
+            self.shape_instance.listt[coordinate_x][coordinate_y] = '\033[95m\u25A0\033[0m'
 
     def draw(self, locations, current_row):
         """
         params: coordinates x,y 
         draws a square of specif color at the given coordinates
         """
-        print(locations) 
+        
         for row in range(len(locations)):
             for col in range(len(locations[0])):
                 if locations[row][col] == 1:
@@ -97,7 +83,7 @@ class Puzzle:
 
 def place_traps():
     blocker_locations = set()
-    max_traps = 12
+    max_traps = 6
     while len(blocker_locations) < max_traps:
         random_location = (random.randint(0, 5), random.randint(0, 5))
         blocker_locations.add(random_location)
@@ -136,36 +122,37 @@ def modify_matrix(puzzle_locations, blocker_locations, first_input, current_row)
 
 def main():
     print("\n")
-    print("\033[91mWelcome to the RGB Matrix enjoy your stay!\033[91m")
-    shape_1 = [[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0],
+    promt = input("\033[91mWelcome to the MatriX. Press 'p' to play!\033[91m")
+    if promt == "p":
+        shape_1 = [[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0],
                [0, 0, 0, 0, 0, 0]]
 
-    blocker_locations = place_traps()
+        blocker_locations = place_traps()
 
-    current_position = (0, 0)
-    puzzle1 = Puzzle(shape_1, blocker_locations)
+        
+        puzzle1 = Puzzle(shape_1, blocker_locations)
 
-    # initialize all locations to 0
-    puzzle1.draw(shape_1, 0) 
-    puzzle1.print_matrix()
+        # initialize all locations to 0
+        puzzle1.draw(shape_1, 0) 
+        puzzle1.print_matrix()
 
-    first_input = True
+        first_input = True
     
-    while True:
+        while True:
         
 
-        for current_row in range(7):
+            for current_row in range(31):
 
-            # SET COORDINATES OF USER INPUT TO 1
-            x, y = modify_matrix(shape_1, blocker_locations, first_input, current_row)
-            print("sss",BROKEN_RULES)
-            first_input = False
+                # SET COORDINATES OF USER INPUT TO 1
+                x, y = modify_matrix(shape_1, blocker_locations, first_input, current_row)
+            
+                first_input = False
 
-            # DRAW SQUARE ON COORDINATES
-            puzzle1.draw_square( x, y)
-            if BROKEN_RULES:
-                exit()  
-            puzzle1.print_matrix()
+                # DRAW SQUARE ON COORDINATES
+                puzzle1.draw_square(x, y)
+                if BROKEN_RULES:
+                    exit()  
+                puzzle1.print_matrix()
 
 
     # run the game until either win or lose or broken rules
